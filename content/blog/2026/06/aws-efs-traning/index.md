@@ -26,7 +26,7 @@ Aquí te muestro cómo pensarlo, y por qué importa.
 En el examen SAA-C03, EFS aparece en escenarios donde múltiples servidores comparten contenido. La pregunta real es: **¿cuándo necesitas un filesystem compartido?**
 
 Ejemplo real:
-- *"Tu aplicación tiene 5 servidores web que escriben y leen los mismos archivos en tiempo real."* → **EFS** (múltiples EC2, acceso simultáneo, datos vivos)
+- *"Tu aplicación tiene 5 servidores web que escriben y leen los mismos archivos en tiempo real."* → **EFS**
 - *"Necesitas home directories compartidos para usuarios en una granja de servidores."* → **EFS**
 - *"Un CMS centralizado donde varios app servers escriben content y attachments."* → **EFS**
 
@@ -44,52 +44,57 @@ Es solo Linux. Para Windows usa FSx for Windows File Server.
 
 -----
 
-## Clases de almacenamiento y Lifecycle
+## Clases de almacenamiento
 
-EFS tiene **4 clases de almacenamiento** optimizadas por costo y frecuencia de acceso.
+EFS tiene 4 clases de almacenamiento optimizadas por costo y frecuencia de acceso:
 
-**Standard** — acceso frecuente, costo normal. Aquí empiezas.
+| Clase | Para qué | Costo | Casos de uso |
+|-------|----------|-------|--------------|
+| **Standard** | Acceso frecuente | Mayor | Datos vivos, en uso constante |
+| **Standard-IA** | Acceso infrecuente (días/semanas) | ~92% más barato | Archivos poco usados, datos históricos |
+| **Archive** | Acceso casi nunca (retención/compliance) | El más barato | Backups antiguos, cumplimiento normativo |
+| **One Zone** | Una sola AZ, acceso frecuente | Más barato que Standard | Dev/test (no production) |
 
-**Standard-IA (Infrequent Access)** — datos que nadie toca hace días/semanas, ~92% más barato. Acceso cuesta un poco más, pero el almacenamiento es mucho más barato.
-
-**Archive** — datos que casi nunca se leen (retención, compliance), el más barato. Latencia mayor en el primer byte.
-
-**One Zone** — igual que Standard pero en una sola AZ, más barato. **Riesgo:** si esa AZ cae, pierdes los datos. Solo úsalo si puedes recuperarlos desde backup.
-
-### EFS Lifecycle Management
-
-El poder está aquí: **EFS mueve archivos automáticamente** entre clases según cuánto tiempo hace que no se acceden. Tú defines las reglas, AWS las ejecuta.
-
-**Ejemplo:** configuras "move to IA después de 30 días sin acceso". Un archivo que nadie toca en 30 días baja automáticamente a IA (92% más barato). El primer acceso lo devuelve a Standard al instante. Sin intervención manual.
-
-Tres reglas independientes, todas opcionales:
-- Move to IA después de X días sin acceso
-- Move to Archive después de X días sin acceso
-- Move to Standard en el primer acceso (crítico — sin esto, un archivo en Archive se queda ahí pagando latencia)
+**Regla:** Standard para empezar. Standard-IA si hay archivos olvidados. Archive si casi nunca los toca nadie. One Zone solo si tienes backup en otra parte.
 
 -----
 
-## Rendimiento: General Purpose vs Max I/O
+## EFS Lifecycle Management
 
-**General Purpose** (default) — web servers, CMS, home directories, cualquier caso normal. Si no sabes qué elegir, aquí va.
+Aquí está el poder: **EFS mueve archivos automáticamente** entre clases según cuánto tiempo hace que no se acceden. Tú defines las reglas, AWS las ejecuta.
 
-**Max I/O** — miles de EC2 accediendo simultáneamente, Big Data, media processing. Mayor throughput, mayor latencia. Solo si mides y compruebas que lo necesitas.
+| Transición | Se dispara por | Resultado |
+|-----------|----------------|-----------|
+| Move to IA | X días sin acceso | Archivo baja a Standard-IA (92% más barato) |
+| Move to Archive | X días sin acceso | Archivo baja a Archive (máximo ahorro) |
+| Move to Standard | Primer acceso | Archivo vuelve a Standard al instante |
 
-Usa General Purpose. Punto.
+**Ejemplo:** configuras "move to IA después de 30 días sin acceso". Un archivo que nadie toca en 30 días baja automáticamente a IA. El primer acceso lo devuelve a Standard al instante. Sin intervención manual.
+
+**Por qué "Move to Standard" importa:** sin esta regla, un archivo que bajó a Archive se queda ahí aunque empieces a usarlo seguido otra vez — pagando latencia indefinidamente. Con esta regla, el primer acceso lo devuelve.
 
 -----
 
-## Throughput: Bursting, Provisioned, Elastic
+## Modos de rendimiento
 
-El throughput es cuántos datos por segundo puede servir EFS.
+| Modo | Para qué | Casos de uso |
+|------|----------|--------------|
+| **General Purpose** (default) | La mayoría de casos | Web servers, CMS, home directories |
+| **Max I/O** | Máximo throughput | Miles de EC2, Big Data, media processing |
 
-**Bursting** (default) — throughput escala con el tamaño del filesystem. Cuanto más datos almacenados, más rápido sirve. Predecible pero limitado.
+**Recomendación:** General Purpose siempre. Solo cambias a Max I/O si mides y compruebas que lo necesitas.
 
-**Provisioned** — defines un throughput fijo, pagas por garantía. Úsalo si necesitas rendimiento garantizado y consistente.
+-----
 
-**Elastic** (recomendado) — escala automáticamente según la demanda. Picos de tráfico, AWS sube. Baja demanda, AWS baja. Pagas lo justo. No tienes que pensar en esto.
+## Modos de throughput
 
-Usa Elastic en producción.
+| Modo | Comportamiento | Recomendación |
+|------|----------------|---------------|
+| **Bursting** (default) | Throughput escala con el tamaño | Archivos pequeños o tráfico variable |
+| **Provisioned** | Throughput fijo garantizado | Tráfico predecible y alto |
+| **Elastic** | Escala automáticamente según carga | Recomendado para producción |
+
+**Conclusión:** Usa **Elastic**. AWS ajusta automáticamente sin que hagas nada.
 
 -----
 
@@ -186,6 +191,22 @@ Para que monte al reiniciar:
 ```bash
 echo "fs-XXXXXXXX:/ /mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 ```
+
+-----
+
+## Conceptos clave para el examen
+
+| Pregunta | Respuesta |
+|----------|-----------|
+| ¿Cuántas EC2 pueden montar EFS simultáneamente? | Miles — no hay límite definido |
+| ¿EFS funciona en Windows? | No. Para Windows usar FSx for Windows File Server |
+| ¿EFS es Multi-AZ? | Sí — mount targets en cada AZ, datos se replican automáticamente |
+| ¿Cómo mueve datos a IA automáticamente? | Con EFS Lifecycle Management — defines días sin acceso y AWS los mueve |
+| ¿Qué puerto usa NFS? | 2049. El SG del mount target debe permitir TCP/2049 desde EC2 |
+| ¿Pagas por tamaño reservado o por uso? | Por lo que usas — EFS es elástico, pagas por GB/mes |
+| ¿Qué hace "Enforce in-transit encryption"? | Obliga a usar TLS en tráfico NFS, requiere mount helper |
+| ¿Cuándo elegir EFS? | Cuando múltiples EC2 necesitan acceso simultáneo a los mismos archivos |
+| ¿Se puede acceder a EFS desde fuera de AWS? | Sí — con Direct Connect o VPN |
 
 -----
 
