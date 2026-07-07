@@ -1,9 +1,9 @@
------
-
+---
 date: ‘2026-05-01T09:00:00-05:00’
 tags: [‘aws’, ‘cloud’, ‘well-architected’, ‘arquitectura’]
 title: ‘SAA-C03 — Well-Architected Framework: Los 6 Pilares’
 slug: ‘Well-Architected-Framework’
+---
 
 Marco de referencia de AWS con preguntas y mejores prácticas para evaluar si una arquitectura está bien diseñada. No es un servicio que se “activa” — es una **guía de pensamiento**: con tantos servicios disponibles en AWS, es fácil construir algo que “funciona” pero que es inseguro, caro o frágil. El framework da 6 lentes distintos para revisar una arquitectura y detectar puntos débiles antes de que se conviertan en un problema real.
 
