@@ -19,10 +19,10 @@ En el examen SAA-C03, casi nunca te preguntarán "enumera los 6 pilares" de form
 
 Ejemplo real:
 - *"Tu aplicación crece rápido. El costo de servidores se duplicó en 3 meses. ¿Qué haces?"*
-  - ✅ Esto grita **Cost Optimization** — reconocerlo te lleva a Spot Instances, Reserved Instances, o restructurar la infraestructura.
+  - Esto grita **Cost Optimization** — reconocerlo te lleva a Spot Instances, Reserved Instances, o restructurar la infraestructura.
 
 - *"Un data center entero se queda sin Internet. Tu app debe seguir funcionando."*
-  - ✅ Esto grita **Reliability** — Multi-AZ, Multi-Region, failover automático.
+  - Esto grita **Reliability** — Multi-AZ, Multi-Region, failover automático.
 
 Cuando entiendas este patrón, descubrirás que **el framework es la estructura detrás de casi todas las preguntas del examen**. No es magia — es lógica arquitectónica.
 
@@ -42,7 +42,7 @@ Cómo administras y operas tu sistema **día a día**. No es la arquitectura en 
 - **Documenta el "cómo":** Tu equipo debe saber cómo opera todo sin depender de una sola persona.
 
 **En el examen, busca:**
-- Mentonas sobre "automatizar", "CloudFormation", "reducir intervención manual", "mejorar procesos".
+- Menciones sobre "automatizar", "CloudFormation", "reducir intervención manual", "mejorar procesos".
 
 -----
 
@@ -141,12 +141,12 @@ Aquí va tu guía rápida. Cuando leas un escenario, busca estas palabras clave:
 
 |Palabra clave en el enunciado                                                      |Pilar que apunta                  |
 |-----------------------------------------------------------------------------------|----------------------------------|
-|"Recuperarse de fallos", "seguir disponible", "tolerancia a fallos", "backup"      |**Reliability**                   |
-|"Usar el recurso correcto", "eficiencia", "latencia baja", "rendimiento"           |**Performance Efficiency**        |
-|"Minimizar costos", "evitar gasto innecesario", "optimizar inversión"              |**Cost Optimization**             |
-|"Monitorear", "mejorar procesos", "automatizar", "CI/CD", "reducir errores manuales"|**Operational Excellence**        |
-|"Proteger datos", "control de acceso", "cifrado", "auditoría", "IAM"              |**Security**                      |
-|"Impacto ambiental", "huella de carbono", "sostenibilidad"                         |**Sustainability**                |
+|"Recuperarse de fallos", "seguir disponible", "tolerancia a fallos", "backup"      |Reliability                       |
+|"Usar el recurso correcto", "eficiencia", "latencia baja", "rendimiento"           |Performance Efficiency            |
+|"Minimizar costos", "evitar gasto innecesario", "optimizar inversión"              |Cost Optimization                 |
+|"Monitorear", "mejorar procesos", "automatizar", "CI/CD", "reducir errores manuales"|Operational Excellence            |
+|"Proteger datos", "control de acceso", "cifrado", "auditoría", "IAM"              |Security                          |
+|"Impacto ambiental", "huella de carbono", "sostenibilidad"                         |Sustainability                     |
 
 **Consejo:** Muchas preguntas suenan a que tocan varios pilares. Tu trabajo es identificar **cuál es el eje principal** del escenario. Eso te lleva a la respuesta correcta.
 
