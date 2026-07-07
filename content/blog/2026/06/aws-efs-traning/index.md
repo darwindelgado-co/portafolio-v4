@@ -13,17 +13,32 @@ slug: 'Elastic-File-System'
   class="insert-image"
 >}}
 
-**EFS (Elastic File System)** es un sistema de archivos compartido administrado por AWS que funciona sobre NFSv4.1 — el equivalente a un servidor NFS tradicional, pero sin que tú lo aprovisions ni lo administres. Si necesitas que múltiples instancias EC2 accedan a los mismos archivos simultáneamente, sin replicar datos, EFS es tu solución.
+**EFS (Elastic File System)** es un sistema de archivos compartido administrado por AWS sobre NFSv4.1 — cuando múltiples EC2 necesitan acceder a los mismos archivos simultáneamente, sin replicar datos.
 
-En el examen SAA-C03, EFS aparece constantemente en escenarios donde múltiples servidores comparten contenido (CMS, home directories, datos compartidos). Debes saber cuándo usarlo, cómo se comporta en Multi-AZ, y cómo se diferencia de EBS y S3.
+Aquí te muestro cómo pensarlo, y por qué importa.
 
 <!--more-->
 
 -----
 
+## Por qué debes conocer esto
+
+En el examen SAA-C03, EFS aparece en escenarios donde múltiples servidores comparten contenido (CMS, home directories, datos compartidos). La pregunta real es: **¿cuándo usar EFS, EBS o S3?** Reconocer eso correctamente te lleva a la respuesta.
+
+Ejemplo real:
+- *"Tu aplicación necesita un almacenamiento compartido donde 5 servidores escriben y leen los mismos archivos en tiempo real."*
+  - Esto grita **EFS** — múltiples EC2, acceso simultáneo, datos que cambian.
+
+- *"Una EC2 necesita un disco rápido solo para ella."*
+  - Esto grita **EBS** — un disco adjunto a una sola instancia.
+
+Cuando entiendas dónde encaja cada uno, descubrirás que **EFS tiene un patrón muy claro**: si es Multi-AZ + acceso compartido + datos vivos, es EFS.
+
+-----
+
 ## EBS vs EFS vs S3
 
-Antes que nada, necesitas entender dónde encaja EFS en el universo de almacenamiento AWS:
+Necesitas entender dónde encaja EFS en el universo de almacenamiento AWS:
 
 | | EBS | EFS | S3 |
 |--|-----|-----|----|
@@ -52,17 +67,17 @@ EFS te permite optimizar costos moviendo archivos automáticamente entre niveles
 
 ### EFS Lifecycle Management
 
-Aquí está el poder de EFS para **optimizar costos automáticamente**. Lifecycle Management mueve archivos entre clases según hace cuánto no se acceden, sin que tú hagas nada. Son 3 reglas independientes, cada una opcional:
+Aquí está el poder: Lifecycle Management mueve archivos entre clases según hace cuánto no se acceden, sin que tú hagas nada. Son 3 reglas independientes, cada una opcional:
 
 | Regla | Qué hace | Se dispara por |
 |---|---|---|
 | **Transition into IA** | Mueve archivos de Standard → IA | Días sin acceso en Standard (7/14/30/60/90) |
-| **Transition into Archive** | Mueve archivos a Archive — el tier más barato, para datos casi nunca tocados | Días sin acceso en Standard |
-| **Transition into Standard** | Devuelve el archivo a Standard | El **primer acceso** (lectura o escritura) en IA o Archive — no es por tiempo |
+| **Transition into Archive** | Mueve archivos a Archive — el tier más barato | Días sin acceso en Standard |
+| **Transition into Standard** | Devuelve el archivo a Standard | El **primer acceso** en IA o Archive — no es por tiempo |
 
-**Por qué "Transition into Standard" es crítico:** sin esta regla, un archivo que ya bajó a IA o Archive se queda ahí aunque empieces a usarlo seguido otra vez — pagando la latencia de acceso de Archive indefinidamente. Con esta regla, el primer acceso lo devuelve a Standard automáticamente.
+**Por qué "Transition into Standard" importa:** sin esta regla, un archivo que bajó a IA o Archive se queda ahí aunque empieces a usarlo seguido otra vez. Con esta regla, el primer acceso lo devuelve a Standard automáticamente.
 
-**Archive** es el tier más nuevo y más barato (más que IA) — pensado para datos de retención/compliance que casi nunca se leen. A cambio, tiene mayor latencia en el primer byte que IA.
+**Archive** es el tier más barato — pensado para datos de retención/compliance que casi nunca se leen, con mayor latencia que IA.
 
 -----
 
@@ -72,10 +87,10 @@ EFS te permite elegir cómo se comporta bajo carga:
 
 | Modo | Cuándo usarlo |
 |------|---------------|
-| **General Purpose** (default) | La mayoría de casos — web servers, CMS, home dirs. Recomendado para empezar |
-| **Max I/O** | Miles de EC2 accediendo simultáneamente — Big Data, media processing, cargas de alta contención |
+| **General Purpose** (default) | La mayoría de casos — web servers, CMS, home dirs |
+| **Max I/O** | Miles de EC2 accediendo simultáneamente — Big Data, media processing |
 
-**General Purpose es la opción segura** — si no sabes cuál elegir, usa General Purpose. Max I/O tiene latencia ligeramente mayor pero puede manejar más operaciones concurrentes.
+General Purpose es la opción segura — si no sabes cuál elegir, usa General Purpose.
 
 -----
 
@@ -83,13 +98,13 @@ EFS te permite elegir cómo se comporta bajo carga:
 
 El throughput define cuántos datos por segundo puede servir EFS:
 
-| Modo | Comportamiento | Recomendación |
-|------|---------------|---------------|
-| **Bursting** (default) | Throughput escala con el tamaño del filesystem — cuanto más datos, más rápido | Archivos pequeños o tráfico variable |
-| **Provisioned** | Defines el throughput independiente del tamaño — pagas por lo que garantizas | Tráfico predecible y alto |
-| **Elastic** | Escala automáticamente según la carga — maneja picos sin que hagas nada | Recomendado para la mayoría |
+| Modo | Comportamiento |
+|------|---------------|
+| **Bursting** (default) | Throughput escala con el tamaño del filesystem |
+| **Provisioned** | Defines el throughput independiente del tamaño |
+| **Elastic** | Escala automáticamente según la carga — recomendado |
 
-**Elastic es lo más práctico:** no tienes que adivinar, AWS ajusta automáticamente.
+**Elastic es lo más práctico:** AWS ajusta automáticamente sin que hagas nada.
 
 -----
 
@@ -110,14 +125,14 @@ Aquí te muestro cómo construir un EFS compartido y verificar que funciona en t
 1. **EFS** → **Create file system** → Name: `training-efs` | VPC: `training-vpc`
 2. **Customize**: 
    - Storage class: `Standard`
-   - Lifecycle: según la tabla de arriba (ej. move to IA después de 30 días)
+   - Lifecycle: (ej. move to IA después de 30 días)
    - Throughput: `Elastic`
-   - Encriptación at-rest: activada (sin costo extra con la key administrada por AWS)
-3. **Network**: revisar que cree un Mount Target por AZ, con un Security Group que permita `NFS/2049`
-4. **File system policy** (pantalla de "Policy options"):
-   - Marcar solo **"Enforce in-transit encryption for all clients"** — fuerza TLS en el tráfico NFS, buena práctica real y tema de examen SAA. Obliga a montar con el **EFS mount helper** (`mount -t efs`).
-   - Dejar sin marcar "Prevent root access by default" y "Enforce read-only access by default" — romperían la prueba de escritura que hacemos más adelante en este lab
-   - Dejar sin marcar "Prevent anonymous access" — no aplica aquí
+   - Encriptación at-rest: activada
+3. **Network**: revisar que cree un Mount Target por AZ con SG que permita `NFS/2049`
+4. **File system policy**:
+   - Marcar **"Enforce in-transit encryption for all clients"** — fuerza TLS en tráfico NFS, requiere montar con el **EFS mount helper**
+   - Dejar sin marcar "Prevent root access by default" y "Enforce read-only access by default"
+   - Dejar sin marcar "Prevent anonymous access"
 5. **Create**
 
 -----
@@ -128,9 +143,9 @@ El mount target necesita recibir tráfico NFS (puerto 2049) desde tus EC2:
 
 1. EC2 → **Security Groups** → **Create security group**
 2. Name: `training-sg-efs`
-3. Inbound: `NFS` | Puerto `2049` | Source: el SG de tus EC2 (o el CIDR de la VPC)
+3. Inbound: `NFS` | Puerto `2049` | Source: el SG de tus EC2
 4. **Create**
-5. Volver a EFS → tu filesystem → **Network** → editar los mount targets → asignar `training-sg-efs`
+5. Volver a EFS → tu filesystem → **Network** → editar mount targets → asignar `training-sg-efs`
 
 {{< figure
   src="./sg-int.png"
@@ -144,19 +159,18 @@ El mount target necesita recibir tráfico NFS (puerto 2049) desde tus EC2:
 
 ### Lanzando las instancias
 
-Crea dos EC2 en diferentes AZ (recomendado: AZ-a y AZ-b) para simular acceso desde múltiples ubicaciones. Ambas con:
-- IAM Role: `AmazonSSMManagedInstanceCore` (para acceder vía SSM Session Manager)
-- Security Group: que permita salida NFS/2049 (o usa el mismo SG que asignaste a mount targets)
-- OS: Amazon Linux 2
+Dos EC2 en diferentes AZ (AZ-a y AZ-b) con:
+- IAM Role: `AmazonSSMManagedInstanceCore`
+- Security Group: que permita salida NFS/2049
 
 -----
 
 ### Montando el filesystem
 
-En **ambas EC2** vía SSM. Como activamos **"Enforce in-transit encryption"** al crear el EFS, el mount manual con `mount -t nfs4` (sin TLS) **va a fallar** — necesitas usar el **EFS mount helper**, que maneja el TLS automáticamente vía `stunnel`:
+En **ambas EC2** vía SSM. Como activamos **"Enforce in-transit encryption"**, el mount manual con `mount -t nfs4` va a fallar — usa el **EFS mount helper**:
 
 ```bash
-# Instalar amazon-efs-utils (contiene el mount helper)
+# Instalar amazon-efs-utils
 sudo dnf install -y amazon-efs-utils
 
 # Crear punto de montaje
@@ -164,12 +178,7 @@ sudo mkdir -p /mnt/efs
 
 # Montar con el helper (usa TLS automáticamente)
 sudo mount -t efs fs-XXXXXXXX:/ /mnt/efs
-
-# Verificar que montó correctamente
-df -h | grep efs
 ```
-
-Si montaste correctamente, verás algo como: `fs-XXXXXXXX:/ 8.0E /mnt/efs`
 
 -----
 
@@ -188,9 +197,9 @@ echo "escrito desde EC2-1" | sudo tee /mnt/efs/prueba.txt
   class="insert-image"
 >}}
 
-Observa el `df -hT`: el filesystem aparece con `8.0E` (exabytes) de capacidad — no es un error, es justamente lo que significa "elástico". EFS no tiene un tamaño que tú definas; AWS crece según lo que uses. Pagas solo por lo que almacenas, no por capacidad reservada.
+Observa el `df -h`: EFS aparece con `8.0E` (exabytes) — no es un error, es "elástico". EFS crece según lo que uses. Pagas solo por lo que almacenas.
 
-**En EC2-2**, lee ese archivo desde una AZ diferente:
+**En EC2-2**, desde otra AZ:
 ```bash
 cat /mnt/efs/prueba.txt
 # Resultado: escrito desde EC2-1
@@ -204,7 +213,7 @@ cat /mnt/efs/prueba.txt
   class="insert-image"
 >}}
 
-Ambas ven el mismo archivo en tiempo real desde AZ diferentes — eso es EFS. Sin replicación manual, sin sincronización de datos, sin complejidad. Multi-AZ automático.
+Ambas ven el mismo archivo en tiempo real desde AZ diferentes — eso es EFS. Multi-AZ automático, sin replicación manual.
 
 -----
 
@@ -213,14 +222,8 @@ Ambas ven el mismo archivo en tiempo real desde AZ diferentes — eso es EFS. Si
 Para que monte automáticamente al reiniciar:
 
 ```bash
-# Agregar a /etc/fstab
 echo "fs-XXXXXXXX:/ /mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
-
-# Verificar que se agregó correctamente
-cat /etc/fstab | grep efs
 ```
-
-De ahora en adelante, cada vez que reinicies la instancia, EFS montará automáticamente.
 
 -----
 
@@ -228,21 +231,21 @@ De ahora en adelante, cada vez que reinicies la instancia, EFS montará automát
 
 | Pregunta | Respuesta |
 |---|---|
-| ¿Cuántas EC2 pueden montar EFS simultáneamente? | Miles — no hay límite definido oficialmente |
+| ¿Cuántas EC2 pueden montar EFS simultáneamente? | Miles — no hay límite definido |
 | ¿EFS funciona en Windows? | No. Para Windows usar FSx for Windows File Server |
-| ¿Cuál es la diferencia entre EFS y EBS? | EBS = disco de una EC2 (1 a 1). EFS = filesystem compartido entre muchas EC2 (N a N) |
-| ¿EFS es Multi-AZ? | Sí — tiene mount targets en cada AZ, los datos se replican automáticamente |
-| ¿Cómo se mueven datos a EFS Infrequent Access? | Con EFS Lifecycle Management — defines los días sin acceso y AWS los mueve automáticamente |
-| ¿Qué puerto usa NFS? | 2049. El Security Group del mount target debe permitir TCP/2049 desde las EC2 |
-| ¿Pagas por el tamaño que defines o por lo que usas? | Por lo que usas — EFS es elástico, no defines capacidad. Pagas por GB/mes |
-| ¿Qué hace "Enforce in-transit encryption"? | Obliga a usar TLS en el tráfico NFS, requiere montar con el EFS mount helper |
+| ¿Diferencia entre EFS y EBS? | EBS = disco de una EC2. EFS = filesystem compartido entre muchas EC2 |
+| ¿EFS es Multi-AZ? | Sí — mount targets en cada AZ, datos se replican automáticamente |
+| ¿Cómo se mueven datos a IA? | Con EFS Lifecycle Management — defines días sin acceso y AWS los mueve |
+| ¿Qué puerto usa NFS? | 2049. El SG del mount target debe permitir TCP/2049 desde EC2 |
+| ¿Pagas por tamaño o por uso? | Por lo que usas — EFS es elástico, pagas por GB/mes |
+| ¿Qué hace "Enforce in-transit encryption"? | Obliga a usar TLS en tráfico NFS, requiere mount helper |
 | ¿Cuándo elegir EFS sobre EBS? | Cuando múltiples EC2 necesitan acceso simultáneo a los mismos archivos |
-| ¿Puedo acceder a EFS desde fuera de AWS? | Sí — con AWS Direct Connect o VPN. Por defecto accesible solo desde la VPC |
+| ¿Se puede acceder a EFS desde fuera de AWS? | Sí — con Direct Connect o VPN |
 
 -----
 
 ## Lo que debes recordar
 
-EFS no es un servicio que "actives y olvidas". Es una **decisión arquitectónica**. Si tu escenario dice "múltiples servidores necesitan compartir datos en tiempo real", la respuesta probablemente sea EFS. Si dice "una EC2 necesita almacenamiento rápido", es EBS. Si dice "almacenar millones de objetos sin estructura", es S3.
+Si tu escenario dice "múltiples servidores necesitan compartir datos en tiempo real", es EFS. Si dice "una EC2 necesita almacenamiento rápido", es EBS. Si dice "almacenar millones de objetos sin estructura", es S3.
 
 En el examen SAA, cuando veas Multi-AZ + acceso compartido + datos que cambian, piensa EFS.
