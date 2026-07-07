@@ -1,5 +1,5 @@
 ---
-date: ‘2026-05-01T09:00:00-05:00’
+date: '2026-05-01T09:00:00-05:00'
 tags: [‘aws’, ‘cloud’, ‘well-architected’, ‘arquitectura’]
 title: ‘SAA-C03 — Well-Architected Framework: Los 6 Pilares’
 slug: ‘Well-Architected-Framework’
