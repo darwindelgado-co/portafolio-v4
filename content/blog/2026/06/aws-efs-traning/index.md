@@ -194,26 +194,20 @@ echo "fs-XXXXXXXX:/ /mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 
 -----
 
-## Conceptos clave para el examen
+## Lo que debes tener en cuenta
 
-| Pregunta | Respuesta |
-|----------|-----------|
-| ¿Cuántas EC2 pueden montar EFS simultáneamente? | Miles — no hay límite definido |
-| ¿EFS funciona en Windows? | No. Para Windows usar FSx for Windows File Server |
-| ¿EFS es Multi-AZ? | Sí — mount targets en cada AZ, datos se replican automáticamente |
-| ¿Cómo mueve datos a IA automáticamente? | Con EFS Lifecycle Management — defines días sin acceso y AWS los mueve |
-| ¿Qué puerto usa NFS? | 2049. El SG del mount target debe permitir TCP/2049 desde EC2 |
-| ¿Pagas por tamaño reservado o por uso? | Por lo que usas — EFS es elástico, pagas por GB/mes |
-| ¿Qué hace "Enforce in-transit encryption"? | Obliga a usar TLS en tráfico NFS, requiere mount helper |
-| ¿Cuándo elegir EFS? | Cuando múltiples EC2 necesitan acceso simultáneo a los mismos archivos |
-| ¿Se puede acceder a EFS desde fuera de AWS? | Sí — con Direct Connect o VPN |
+- **Múltiples EC2 necesitan datos compartidos en tiempo real** → EFS es la respuesta
+- **EFS es Multi-AZ automático** — datos se replican sin que hagas nada
+- **Lifecycle Management mueve archivos automáticamente** — defines días, AWS ejecuta
+- **Elastic throughput** — escala solo lo que necesitas, pagas por uso
+- **One Zone es barato pero riesgoso** — si esa AZ cae, pierdes los datos
 
 -----
 
 ## Lo que debes recordar
 
-**En el examen:** cuando veas "múltiples servidores comparten datos en tiempo real", es EFS. Multi-AZ, elástico, seguro, sin replicación manual.
+EFS es tu filesystem compartido para infraestructura en AWS. Múltiples máquinas, datos vivos, administrado completamente. 
 
-**En producción:** EFS es tu filesystem compartido. Úsalo para home directories, CMS centralizados, datos compartidos entre aplicaciones. No úsalo para base de datos — para eso está RDS o DynamoDB.
+No para base de datos — para eso RDS o DynamoDB.
 
-EFS es simple: filesystem compartido, múltiples EC2, datos vivos, administrado por AWS.
+EFS es simple: compartir archivos entre EC2, Multi-AZ automático, sin replicación manual.
