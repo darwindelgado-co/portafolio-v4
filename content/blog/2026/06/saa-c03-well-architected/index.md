@@ -1,15 +1,15 @@
 ---
-date: '2026-05-01T09:00:00-05:00'
-tags: [‘aws’, ‘cloud’, ‘well-architected’, ‘arquitectura’]
-title: ‘SAA-C03 — Well-Architected Framework: Los 6 Pilares’
-slug: ‘Well-Architected-Framework’
+date: '2026-06-01T09:00:00-05:00'
+tags: ['aws', 'cloud', 'well-architected', 'arquitectura']
+title: 'SAA-C03 — Well-Architected Framework: Los 6 Pilares'
+slug: 'Well-Architected-Framework'
 ---
 
-Marco de referencia de AWS con preguntas y mejores prácticas para evaluar si una arquitectura está bien diseñada. No es un servicio que se “activa” — es una **guía de pensamiento**: con tantos servicios disponibles en AWS, es fácil construir algo que “funciona” pero que es inseguro, caro o frágil. El framework da 6 lentes distintos para revisar una arquitectura y detectar puntos débiles antes de que se conviertan en un problema real.
+Marco de referencia de AWS con preguntas y mejores prácticas para evaluar si una arquitectura está bien diseñada. No es un servicio que se "activa" — es una **guía de pensamiento**: con toda la documentación y herramientas que AWS ofrece para revisar arquitecturas.
 
 <!--more-->
 
-En el examen SAA, este marco importa porque **muchas preguntas de arquitectura están, en el fondo, pidiendo aplicar uno de estos pilares**, aunque no lo digan explícitamente. Cuando un escenario da varias opciones que técnicamente funcionan, la diferencia casi siempre está en cuál respeta mejor alguno de estos 6 principios.
+En el examen SAA, este marco importa porque **muchas preguntas de arquitectura están, en el fondo, pidiendo aplicar uno de estos pilares**, aunque no lo digan explícitamente. Cuando un escenario te describe un problema, lo que realmente pregunta es "¿cuál de estos 6 pilares estás priorizando?".
 
 -----
 
@@ -24,7 +24,7 @@ En el examen SAA, este marco importa porque **muchas preguntas de arquitectura e
 - Aprender de fallos pasados y mejorar procesos continuamente.
 - Documentar y estandarizar cómo se despliega y opera todo.
 
-**Señal en el examen:** “automatizar despliegues”, “CloudFormation”, “reducir errores humanos en producción”.
+**Señal en el examen:** "automatizar despliegues", "CloudFormation", "reducir errores humanos en producción".
 
 -----
 
@@ -53,7 +53,7 @@ En el examen SAA, este marco importa porque **muchas preguntas de arquitectura e
 - Recuperación ante desastres (backups, estrategias DR: Pilot Light, Warm Standby, Multi-Site).
 - Capacidad de manejar cambios de demanda sin caerse (Auto Scaling).
 
-**Señal en el examen:** “la región completa cae y la app debe seguir funcionando” es este pilar en su forma más pura.
+**Señal en el examen:** "la región completa cae y la app debe seguir funcionando" es este pilar en su forma más pura.
 
 -----
 
@@ -101,18 +101,18 @@ En el examen SAA, este marco importa porque **muchas preguntas de arquitectura e
 
 ## ¿Qué busca el examen SAA con esto?
 
-Casi nunca pregunta “enumera los 6 pilares” de forma directa. Lo que busca es que, dado un escenario, se **reconozca qué pilar es la prioridad del enunciado** y se elija la opción que mejor lo cumple — incluso cuando varias opciones “funcionan” técnicamente. Aunque el enunciado no use la palabra “pilar”, cada pregunta de arquitectura casi siempre tiene un pilar dominante detrás de la respuesta correcta.
+Casi nunca pregunta "enumera los 6 pilares" de forma directa. Lo que busca es que, dado un escenario, se **reconozca qué pilar es la prioridad del enunciado** y se elija la opción que mejor lo satisface. Es como tener lentes de diferentes colores — cada uno te hace ver el problema desde una óptica distinta.
 
 ### Guía rápida de palabras clave → pilar
 
 |Palabra clave en el enunciado                                                      |Pilar                     |
 |-----------------------------------------------------------------------------------|--------------------------|
-|“Recuperarse de fallos”, “seguir disponible”, “tolerancia a fallos”                |**Reliability**           |
-|“Usar el recurso correcto”, “eficiencia”, “adaptarse a la demanda sin desperdiciar”|**Performance Efficiency**|
-|“Evitar gasto innecesario”, “minimizar costos”                                     |**Cost Optimization**     |
-|“Monitorear, mejorar procesos, automatizar operaciones”                            |**Operational Excellence**|
-|“Proteger datos, control de acceso, cifrado”                                       |**Security**              |
-|“Impacto ambiental, huella de carbono”                                             |**Sustainability**        |
+|"Recuperarse de fallos", "seguir disponible", "tolerancia a fallos"                |**Reliability**           |
+|"Usar el recurso correcto", "eficiencia", "adaptarse a la demanda sin desperdiciar"|**Performance Efficiency**|
+|"Evitar gasto innecesario", "minimizar costos"                                     |**Cost Optimization**     |
+|"Monitorear, mejorar procesos, automatizar operaciones"                            |**Operational Excellence**|
+|"Proteger datos, control de acceso, cifrado"                                       |**Security**              |
+|"Impacto ambiental, huella de carbono"                                             |**Sustainability**        |
 
 -----
 
