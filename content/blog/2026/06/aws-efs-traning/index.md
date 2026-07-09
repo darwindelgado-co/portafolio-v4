@@ -5,14 +5,6 @@ title: 'SAA-C03 — EFS: Elastic File System'
 slug: 'Elastic-File-System'
 ---
 
-{{< figure
-  src="./Amazon-EFS.png"
-  alt="Icono del servicio Amazon EFS"
-  width="700"
-  height="auto"
-  class="insert-image"
->}}
-
 **EFS (Elastic File System)** es un sistema de archivos compartido administrado por AWS — cuando múltiples EC2 necesitan acceder a los mismos archivos simultáneamente, sin replicar datos.
 
 Aquí te muestro cómo pensarlo, y por qué importa.
@@ -71,7 +63,7 @@ Aquí está el poder: **EFS mueve archivos automáticamente** entre clases segú
 
 **Ejemplo:** configuras "move to IA después de 30 días sin acceso". Un archivo que nadie toca en 30 días baja automáticamente a IA. El primer acceso lo devuelve a Standard al instante. Sin intervención manual.
 
-**Por qué "Move to Standard" importa:** sin esta regla, un archivo que bajó a Archive se queda ahí aunque empieces a usarlo seguido otra vez — pagando latencia indefinidamente. Con esta regla, el primer acceso lo devuelve.
+**Por qué "Move to Standard" importa:** sin esta regla, un archivo que bajó a Archive se queda ahí aunque empieces a usarlo seguido otra vez — pagando latencia indefinidamente. Con esta regla, el primer acceso lo restaura automáticamente.
 
 -----
 
