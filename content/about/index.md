@@ -8,7 +8,7 @@ author: "Darwin Delgado"
 
 #### Infrastructure Engineer.
 
-Administro infraestructuras en nube pública y privada, especialista en Linux y Ansible. Trabajo con Docker, Kubernetes, CI/CD (Azure DevOps/GitHub), y Observabilidad.
+Administro infraestructuras en nube pública y privada, especialista en Linux. Trabajo con Docker, Ansible, Kubernetes, CI/CD (Azure DevOps/GitHub), y Observabilidad.
 
 #### Sobre el sitio
 
