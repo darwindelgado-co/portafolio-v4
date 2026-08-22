@@ -6,20 +6,22 @@ aliases:
 author: "Darwin Delgado"
 ---
 
-#### Infrastructure Engineer.
+#### Infrastructure Engineer & Content Creator
 
-Administro infraestructuras en nube pública y privada, especialista en Linux. Trabajo con Docker, Ansible, Kubernetes, CI/CD (Azure DevOps/GitHub), y Observabilidad.
+Administro y automatizo infraestructuras híbridas. Trabajo con Docker, Kubernetes, Ansible, CI/CD y observabilidad. Especialista en Linux.
 
-Aquí documento mi progreso de estudio para certificaciones (AWS, RHEL, Azure, entre otras) y publico guías técnicas y artículos basados en mi experiencia real implementando estas tecnologías.
+Aquí publico diariamente: guías técnicas y artículos prácticos basados en mi experiencia real.
 
 #### Certificaciones
 
-- AWS Certified Cloud Practitioner — diciembre 2025
+- AWS Certified Solutions Architect
+- AWS Certified Cloud Practitioner
+- Red Hat Certified System Administrator (RHCSA)
 
-#### Sobre el sitio
+#### Stack Tecnológico
+
+Docker • Kubernetes • Ansible • Git • Linux
 
 Codificado en Visual Studio Code. Construido con [Hugo](https://gohugo.io) y el tema [Archie](https://github.com/athul/archie) (personalizado), desplegado en Cloudflare.
-
-
 
 _Cloud, DevOps, SysAdmin, entusiasta tech, homelab._
