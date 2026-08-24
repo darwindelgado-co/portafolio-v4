@@ -9,6 +9,14 @@ Quería que dos EC2, en dos Availability Zones distintas, leyeran y escribieran 
 
 <!--more-->
 
+{{< figure
+  src="./efs-storage.png"
+  alt="Diagrama de red de como se conectan las EC2 y EFS a traves del mount target"
+  width="700"
+  height="auto"
+  class="insert-image"
+>}}
+
 -----
 
 ## 1. Crea el filesystem
@@ -24,14 +32,6 @@ Así queda el filesystem una vez creado:
 {{< figure
   src="./aws-efs.png"
   alt="Pantalla de detalle del filesystem training-efs ya creado en la consola de EFS, con performance mode General Purpose, throughput Elastic y lifecycle management configurado"
-  width="700"
-  height="auto"
-  class="insert-image"
->}}
-
-{{< figure
-  src="./efs-storage.png"
-  alt="Diagrama de red de como se conectan las EC2 y EFS a traves del mount target"
   width="700"
   height="auto"
   class="insert-image"
