@@ -6,8 +6,6 @@ aliases:
 author: "Darwin Delgado"
 ---
 
-#### Infrastructure Engineer
-
 Infrastructure Engineer especializado en Linux e infraestructura híbrida. Monto, automatizo y documento lo que construyo — sin relleno.
 
 Aquí publico guías técnicas y artículos prácticos basados en mi experiencia real.
@@ -23,6 +21,8 @@ Aquí publico guías técnicas y artículos prácticos basados en mi experiencia
 #### Stack Tecnológico
 
 AWS • Azure • Docker • k8s • Ansible • Bash • Prometheus • Grafana • Zabbix • Git • GitHub • Linux
+
+-----
 
 Codificado en Visual Studio Code. Construido con [Hugo](https://gohugo.io) y el tema [Archie](https://github.com/athul/archie) (personalizado), desplegado en Cloudflare.
 
