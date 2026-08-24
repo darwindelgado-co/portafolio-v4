@@ -12,7 +12,7 @@ Quería que dos EC2, en dos Availability Zones distintas, leyeran y escribieran 
 {{< figure
   src="./efs-storage.png"
   alt="Diagrama de red de como se conectan las EC2 y EFS a traves del mount target"
-  width="700"
+  width="900"
   height="auto"
   class="insert-image"
 >}}
@@ -32,7 +32,7 @@ Así queda el filesystem una vez creado:
 {{< figure
   src="./aws-efs.png"
   alt="Pantalla de detalle del filesystem training-efs ya creado en la consola de EFS, con performance mode General Purpose, throughput Elastic y lifecycle management configurado"
-  width="700"
+  width="900"
   height="auto"
   class="insert-image"
 >}}
@@ -50,7 +50,7 @@ Vuelve a EFS → tu filesystem → Network → edita los mount targets → asign
 {{< figure
   src="./sg-int.png"
   alt="Reglas inbound del security group training-sg-efs permitiendo NFS puerto 2049"
-  width="700"
+  width="900"
   height="auto"
   class="insert-image"
 >}}
@@ -81,7 +81,7 @@ echo "escrito desde EC2-1" | sudo tee /mnt/efs/prueba.txt
 {{< figure
   src="./ec2-1-efs-prueba.png"
   alt="Terminal de EC2-1 montando EFS y escribiendo el archivo de prueba"
-  width="700"
+  width="900"
   height="auto"
   class="insert-image"
 >}}
@@ -97,7 +97,7 @@ cat /mnt/efs/prueba.txt
 {{< figure
   src="./ec2-2-efs-prueba.png"
   alt="Terminal de EC2-2 leyendo el archivo escrito desde EC2-1, confirmando el filesystem compartido"
-  width="700"
+  width="900"
   height="auto"
   class="insert-image"
 >}}

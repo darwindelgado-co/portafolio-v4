@@ -169,14 +169,14 @@ figure img,
 .insert-image img {
   margin: 0 auto;
   display: block;
-  max-width: min(700px, 100%);
+  max-width: min(900px, 100%);
   height: auto;
 }
 
 figure.insert-image figcaption p {
   display: block;
   text-align: center;
-  max-width: min(700px, 100%);
+  max-width: min(900px, 100%);
   font-style: italic;
   margin: 0.25em auto 0;
 }
