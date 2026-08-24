@@ -8,7 +8,7 @@ author: "Darwin Delgado"
 
 #### Infrastructure Engineer & Content Creator
 
-Administro y automatizo infraestructuras híbridas. Trabajo con Docker, k8s, Ansible, CI/CD y observabilidad. Especialista en Linux.
+Infrastructure Engineer especializado en Linux e infraestructura híbrida. Monto, automatizo y documento lo que construyo — sin relleno.
 
 Aquí publico diariamente: guías técnicas y artículos prácticos basados en mi experiencia real.
 
