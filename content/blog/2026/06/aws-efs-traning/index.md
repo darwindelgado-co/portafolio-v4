@@ -1,7 +1,7 @@
 ---
 date: '2026-06-12T09:00:00-05:00'
 tags: ['aws', 'cloud', 'efs']
-title: 'Cómo monté un EFS compartido entre dos EC2 en distintas AZ'
+title: 'Configurando EFS compartido entre dos EC2 en distintas AZ'
 slug: 'Elastic-File-System'
 ---
 
@@ -18,6 +18,16 @@ EFS → Create file system → Name: `training-efs`, VPC: `training-vpc`.
 Customization: Storage class Standard, Throughput Elastic, encriptación at-rest activada.
 
 En **File system policy**, marca **"Enforce in-transit encryption for all clients"** — obliga TLS en el tráfico NFS. Sin esto, los datos van en texto plano por la red.
+
+Así queda el filesystem una vez creado:
+
+{{< figure
+  src="./aws-efs.png"
+  alt="Pantalla de detalle del filesystem training-efs ya creado en la consola de EFS, con performance mode General Purpose, throughput Elastic y lifecycle management configurado"
+  width="700"
+  height="auto"
+  class="insert-image"
+>}}
 
 {{< figure
   src="./efs-storage.png"
