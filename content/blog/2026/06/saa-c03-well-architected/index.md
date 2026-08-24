@@ -3,6 +3,7 @@ date: '2026-06-01T09:00:00-05:00'
 tags: ['aws', 'cloud', 'well-architected', 'arquitectura']
 title: 'SAA-C03 — Well-Architected Framework: Los 6 Pilares'
 slug: 'Well-Architected-Framework'
+draft: true
 ---
 
 El **Well-Architected Framework de AWS** no es solo teoría para el examen SAA-C03. Es tu brújula para construir sistemas que realmente funcionen en producción: resilientes, seguros, eficientes y sostenibles. Si estás preparándote para el examen, necesitas entenderlo no como una lista de memorizar, sino como un lente para reconocer qué está realmente en juego en cada escenario.
