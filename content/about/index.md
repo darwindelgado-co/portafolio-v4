@@ -12,11 +12,13 @@ Administro y automatizo infraestructuras híbridas. Trabajo con Docker, Kubernet
 
 Aquí publico diariamente: guías técnicas y artículos prácticos basados en mi experiencia real.
 
+<!--
 #### Certificaciones
 
 - AWS Certified Solutions Architect
 - AWS Certified Cloud Practitioner
 - Red Hat Certified System Administrator (RHCSA)
+-->
 
 #### Stack Tecnológico
 
